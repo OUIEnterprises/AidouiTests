@@ -74,4 +74,26 @@ public class TestConfig {
     public int getRequestTimeout() {
         return Integer.parseInt(properties.getProperty("api.timeout", "30000"));
     }
+
+    /**
+     * Get a property value by key.
+     * Useful for accessing dynamic or test-specific properties.
+     *
+     * @param key Property key
+     * @return Property value, or null if not found
+     */
+    public String getProperty(String key) {
+        return properties.getProperty(key);
+    }
+
+    /**
+     * Get a property value with a default fallback.
+     *
+     * @param key Property key
+     * @param defaultValue Default value if property not found
+     * @return Property value, or defaultValue if not found
+     */
+    public String getProperty(String key, String defaultValue) {
+        return properties.getProperty(key, defaultValue);
+    }
 }
