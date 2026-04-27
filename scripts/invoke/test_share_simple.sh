@@ -1,0 +1,99 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Source environment variables
+source "$(dirname "$0")/env.sh"
+
+echo "======================================"
+echo "Test: Simple Share Code Generation"
+echo "======================================"
+echo ""
+
+# Login as patient
+echo "Logging in as $PATIENT1_EMAIL..."
+LOGIN_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$API_URL/login" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $API_KEY" \
+  -d '{
+    "email": "'"$PATIENT1_EMAIL"'",
+    "password": "'"$PATIENT1_PASS"'"
+  }')
+
+HTTP_CODE=$(echo "$LOGIN_RESPONSE" | tail -n1)
+RESPONSE_BODY=$(echo "$LOGIN_RESPONSE" | sed '$d')
+
+if [ "$HTTP_CODE" -ne 200 ]; then
+  echo "Login failed (HTTP $HTTP_CODE)"
+  echo "$RESPONSE_BODY" | jq '.'
+  exit 1
+fi
+
+ID_TOKEN=$(echo "$RESPONSE_BODY" | jq -r '.idToken')
+echo "✓ Login successful"
+echo ""
+
+# Test 1: Share code WITHOUT recordTypes
+echo "Test 1: Share code WITHOUT recordTypes parameter..."
+SHARE_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$API_URL/records/share" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $API_KEY" \
+  -H "Authorization: Bearer $ID_TOKEN" \
+  -d '{
+    "purpose": "DOCTOR_VISIT",
+    "ttlSeconds": 3600,
+    "label": "Test - Simple Share"
+  }')
+
+HTTP_CODE=$(echo "$SHARE_RESPONSE" | tail -n1)
+RESPONSE_BODY=$(echo "$SHARE_RESPONSE" | sed '$d')
+
+echo "HTTP Status: $HTTP_CODE"
+echo "Response:"
+echo "$RESPONSE_BODY" | jq '.'
+echo ""
+
+# Test 2: Share code WITH recordTypes
+echo "Test 2: Share code WITH recordTypes parameter..."
+SHARE_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$API_URL/records/share" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $API_KEY" \
+  -H "Authorization: Bearer $ID_TOKEN" \
+  -d '{
+    "purpose": "DOCTOR_VISIT",
+    "ttlSeconds": 3600,
+    "label": "Test - Selective Share",
+    "recordTypes": ["PRESCRIPTION", "LAB", "VISIT_NOTES"]
+  }')
+
+HTTP_CODE=$(echo "$SHARE_RESPONSE" | tail -n1)
+RESPONSE_BODY=$(echo "$SHARE_RESPONSE" | sed '$d')
+
+echo "HTTP Status: $HTTP_CODE"
+echo "Response:"
+echo "$RESPONSE_BODY" | jq '.'
+echo ""
+
+# Test 3: Share code with EMPTY recordTypes array
+echo "Test 3: Share code with EMPTY recordTypes array..."
+SHARE_RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$API_URL/records/share" \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: $API_KEY" \
+  -H "Authorization: Bearer $ID_TOKEN" \
+  -d '{
+    "purpose": "DOCTOR_VISIT",
+    "ttlSeconds": 3600,
+    "label": "Test - Empty Array",
+    "recordTypes": []
+  }')
+
+HTTP_CODE=$(echo "$SHARE_RESPONSE" | tail -n1)
+RESPONSE_BODY=$(echo "$SHARE_RESPONSE" | sed '$d')
+
+echo "HTTP Status: $HTTP_CODE"
+echo "Response:"
+echo "$RESPONSE_BODY" | jq '.'
+echo ""
+
+echo "======================================"
+echo "Tests Complete"
+echo "======================================"
