@@ -1,0 +1,54 @@
+version: 0.2
+
+# AWS CodeBuild buildspec for E2E tests
+# This runs in the Beta deployment stage of the pipeline
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto17
+    commands:
+      - echo "Java version:"
+      - java -version
+      - echo "Maven version:"
+      - mvn -version
+
+  pre_build:
+    commands:
+      - echo "Installing dependencies..."
+      - mvn clean install -DskipTests
+      - echo "Waiting for API to be healthy..."
+      - sleep 10  # Give the API time to be ready after deployment
+
+  build:
+    commands:
+      - echo "Running E2E tests against Beta environment..."
+      - mvn test -Denv=beta
+      - echo "Tests completed!"
+
+  post_build:
+    commands:
+      - echo "Build completed on $(date)"
+      - |
+        if [ $CODEBUILD_BUILD_SUCCEEDING -eq 0 ]; then
+          echo "❌ Tests FAILED - Beta deployment should not proceed to Prod"
+          exit 1
+        else
+          echo "✅ All tests PASSED - Beta deployment verified"
+        fi
+
+reports:
+  e2e-test-results:
+    files:
+      - 'target/surefire-reports/TEST-*.xml'
+    file-format: 'JUNITXML'
+    base-directory: '.'
+
+artifacts:
+  files:
+    - 'target/surefire-reports/**/*'
+  name: test-reports
+
+cache:
+  paths:
+    - '/root/.m2/**/*'
