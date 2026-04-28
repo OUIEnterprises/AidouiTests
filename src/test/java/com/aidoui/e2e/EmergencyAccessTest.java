@@ -2,9 +2,13 @@ package com.aidoui.e2e;
 
 import com.aidoui.e2e.config.TestConfig;
 import io.restassured.RestAssured;
+import io.restassured.config.HttpClientConfig;
+import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
+
+import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +33,7 @@ import static org.hamcrest.Matchers.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("E2E: Emergency Portal Access Control")
+@Timeout(value = 45, unit = TimeUnit.SECONDS)
 public class EmergencyAccessTest {
     
     private TestConfig config;
@@ -43,6 +48,14 @@ public class EmergencyAccessTest {
         config = TestConfig.getInstance();
         RestAssured.baseURI = config.getApiUrl();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+
+        // Configure timeouts to prevent tests from hanging indefinitely
+        int timeoutMs = config.getRequestTimeout();
+        RestAssured.config = RestAssuredConfig.config()
+            .httpClient(HttpClientConfig.httpClientConfig()
+                .setParam("http.connection.timeout", timeoutMs)
+                .setParam("http.socket.timeout", timeoutMs)
+                .setParam("http.connection-manager.timeout", timeoutMs));
     }
     
     // ============================================================================

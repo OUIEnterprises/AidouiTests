@@ -2,9 +2,13 @@ package com.aidoui.e2e;
 
 import com.aidoui.e2e.config.TestConfig;
 import io.restassured.RestAssured;
+import io.restassured.config.HttpClientConfig;
+import io.restassured.config.RestAssuredConfig;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.*;
+
+import java.util.concurrent.TimeUnit;
 
 import java.io.File;
 import java.util.List;
@@ -35,6 +39,7 @@ import static org.hamcrest.Matchers.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("E2E: Selective Record Sharing")
+@Timeout(value = 45, unit = TimeUnit.SECONDS)
 public class SelectiveSharingTest {
 
     private TestConfig config;
@@ -53,6 +58,14 @@ public class SelectiveSharingTest {
         config = TestConfig.getInstance();
         RestAssured.baseURI = config.getApiUrl();
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+
+        // Configure timeouts to prevent tests from hanging indefinitely
+        int timeoutMs = config.getRequestTimeout();
+        RestAssured.config = RestAssuredConfig.config()
+            .httpClient(HttpClientConfig.httpClientConfig()
+                .setParam("http.connection.timeout", timeoutMs)
+                .setParam("http.socket.timeout", timeoutMs)
+                .setParam("http.connection-manager.timeout", timeoutMs));
     }
 
     @Test
