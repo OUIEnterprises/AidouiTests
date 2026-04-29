@@ -84,9 +84,7 @@ public class PatientDoctorFlowTest {
                 .extract().response();
 
         patientIdToken = response.path("idToken");
-        assertThat(patientIdToken)
-                .as("Patient ID token should be present")
-                .isNotEmpty();
+        assertThat("Patient ID token should be present", patientIdToken, is(not(emptyString())));
     }
 
     @Test
@@ -115,9 +113,7 @@ public class PatientDoctorFlowTest {
                 .extract().response();
 
         shareCode = response.path("code");
-        assertThat(shareCode)
-                .as("Share code should be 6 characters")
-                .hasSize(6);
+        assertThat("Share code should be 6 characters", shareCode.length(), is(6));
 
         // Log the allowed record types if present
         if (response.path("recordTypes") != null) {
@@ -167,9 +163,7 @@ public class PatientDoctorFlowTest {
                 .extract().response();
 
         doctorIdToken = response.path("idToken");
-        assertThat(doctorIdToken)
-                .as("Doctor ID token should be present")
-                .isNotEmpty();
+        assertThat("Doctor ID token should be present", doctorIdToken, is(not(emptyString())));
     }
 
     @Test
@@ -196,9 +190,7 @@ public class PatientDoctorFlowTest {
                 .extract().response();
 
         passToken = response.path("passToken");
-        assertThat(passToken)
-                .as("Pass token should be present")
-                .isNotEmpty();
+        assertThat("Pass token should be present", passToken, is(not(emptyString())));
 
         System.out.println("Pass token capabilities: " + response.path("capabilities").toString());
     }
@@ -227,9 +219,7 @@ public class PatientDoctorFlowTest {
                 .extract().response();
 
         uploadedRecordId = response.path("id");
-        assertThat(uploadedRecordId)
-                .as("Uploaded record ID should be present")
-                .isNotEmpty();
+        assertThat("Uploaded record ID should be present", uploadedRecordId, is(not(emptyString())));
 
         System.out.println("Uploaded record ID: " + uploadedRecordId);
     }
@@ -254,9 +244,7 @@ public class PatientDoctorFlowTest {
 
         // Verify our uploaded record is in the list
         boolean recordFound = response.path("items.find { it.id == '" + uploadedRecordId + "' }") != null;
-        assertThat(recordFound)
-                .as("Uploaded record should appear in patient's records")
-                .isTrue();
+        assertThat("Uploaded record should appear in patient's records", recordFound, is(true));
 
         // Verify record details
         given()

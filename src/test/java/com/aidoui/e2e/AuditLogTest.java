@@ -94,9 +94,7 @@ public class AuditLogTest {
         patientIdToken = response.path("idToken");
         patientId = response.path("user.userId");
 
-        assertThat(patientIdToken)
-                .as("Patient ID token should be present")
-                .isNotEmpty();
+        assertThat("Patient ID token should be present", patientIdToken, is(not(emptyString())));
 
         System.out.println("Patient logged in. Patient ID: " + patientId);
     }
@@ -251,9 +249,7 @@ public class AuditLogTest {
                        shareCodeMasked.startsWith(shareCode.substring(0, 2)); // Masked code shows first 2 chars
             });
 
-        assertThat(foundShareCreated)
-                .as("Audit log should contain SHARE_CREATED entry")
-                .isTrue();
+        assertThat("Audit log should contain SHARE_CREATED entry", foundShareCreated, is(true));
 
         System.out.println("✓ SHARE_CREATED audit entry verified");
     }
@@ -284,9 +280,7 @@ public class AuditLogTest {
                        shareCodeMasked.startsWith(shareCode.substring(0, 2));
             });
 
-        assertThat(foundPassIssued)
-                .as("Audit log should contain PASS_ISSUED entry")
-                .isTrue();
+        assertThat("Audit log should contain PASS_ISSUED entry", foundPassIssued, is(true));
 
         System.out.println("✓ PASS_ISSUED audit entry verified");
     }
@@ -313,9 +307,7 @@ public class AuditLogTest {
                 return "VIEW_RECORDS".equals(action);
             });
 
-        assertThat(foundViewRecords)
-                .as("Audit log should contain VIEW_RECORDS entry")
-                .isTrue();
+        assertThat("Audit log should contain VIEW_RECORDS entry", foundViewRecords, is(true));
 
         System.out.println("✓ VIEW_RECORDS audit entry verified");
     }
@@ -347,33 +339,19 @@ public class AuditLogTest {
             .orElseThrow(() -> new AssertionError("No audit entry found"));
 
         // Verify required HIPAA fields
-        assertThat(auditEntry.get("patientId"))
-                .as("Audit entry must have patientId")
-                .isNotNull();
+        assertThat("Audit entry must have patientId", auditEntry.get("patientId"), notNullValue());
 
-        assertThat(auditEntry.get("providerId"))
-                .as("Audit entry must have providerId")
-                .isNotNull();
+        assertThat("Audit entry must have providerId", auditEntry.get("providerId"), notNullValue());
 
-        assertThat(auditEntry.get("providerRole"))
-                .as("Audit entry must have providerRole")
-                .isNotNull();
+        assertThat("Audit entry must have providerRole", auditEntry.get("providerRole"), notNullValue());
 
-        assertThat(auditEntry.get("action"))
-                .as("Audit entry must have action")
-                .isNotNull();
+        assertThat("Audit entry must have action", auditEntry.get("action"), notNullValue());
 
-        assertThat(auditEntry.get("timestamp"))
-                .as("Audit entry must have timestamp")
-                .isNotNull();
+        assertThat("Audit entry must have timestamp", auditEntry.get("timestamp"), notNullValue());
 
-        assertThat(auditEntry.get("ipAddress"))
-                .as("Audit entry must have ipAddress for HIPAA compliance")
-                .isNotNull();
+        assertThat("Audit entry must have ipAddress for HIPAA compliance", auditEntry.get("ipAddress"), notNullValue());
 
-        assertThat(auditEntry.get("userAgent"))
-                .as("Audit entry must have userAgent for HIPAA compliance")
-                .isNotNull();
+        assertThat("Audit entry must have userAgent for HIPAA compliance", auditEntry.get("userAgent"), notNullValue());
 
         System.out.println("✓ Audit entry contains all required HIPAA fields");
     }
@@ -447,9 +425,7 @@ public class AuditLogTest {
 
             List<Map<String, Object>> logs = response.path("logs");
 
-            assertThat(logs.size())
-                    .as("Limit parameter should restrict number of results")
-                    .isLessThanOrEqualTo(2);
+            assertThat("Limit parameter should restrict number of results", logs.size(), lessThanOrEqualTo(2));
         }
 
         @Test

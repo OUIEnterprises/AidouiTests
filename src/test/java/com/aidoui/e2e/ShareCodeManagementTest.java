@@ -85,9 +85,7 @@ public class ShareCodeManagementTest {
                 .extract().response();
 
         patientIdToken = response.path("idToken");
-        assertThat(patientIdToken)
-                .as("Patient ID token should be present")
-                .isNotEmpty();
+        assertThat("Patient ID token should be present", patientIdToken, is(not(emptyString())));
     }
 
     @Test
@@ -191,9 +189,7 @@ public class ShareCodeManagementTest {
         List<String> codes = response.path("shareCodes.code");
         System.out.println("Active share codes: " + codes);
 
-        assertThat(codes)
-                .as("All three created codes should be in the list")
-                .contains(shareCode1, shareCode2, shareCode3);
+        assertThat("All three created codes should be in the list", codes, hasItems(shareCode1, shareCode2, shareCode3));
 
         // Verify structure of returned share codes
         response.then()
@@ -221,9 +217,7 @@ public class ShareCodeManagementTest {
         String message = response.path("message");
         System.out.println("Revocation response: " + message);
 
-        assertThat(message)
-                .as("Revocation message should confirm success")
-                .containsIgnoringCase("revoked");
+        assertThat("Revocation message should confirm success", message, containsStringIgnoringCase("revoked"));
     }
 
     @Test
@@ -243,13 +237,9 @@ public class ShareCodeManagementTest {
         List<String> codes = response.path("shareCodes.code");
         System.out.println("Active codes after revocation: " + codes);
 
-        assertThat(codes)
-                .as("Revoked code should not be in active codes")
-                .doesNotContain(shareCode1);
+        assertThat("Revoked code should not be in active codes", codes, not(hasItem(shareCode1)));
 
-        assertThat(codes)
-                .as("Non-revoked codes should still be in the list")
-                .contains(shareCode2, shareCode3);
+        assertThat("Non-revoked codes should still be in the list", codes, hasItems(shareCode2, shareCode3));
     }
 
     @Test

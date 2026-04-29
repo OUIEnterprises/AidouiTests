@@ -171,10 +171,9 @@ public class EmergencyAccessTest {
             .extract().response();
         
         emergencyShareCode = response.path("code");
-        assertThat(emergencyShareCode)
-            .isNotEmpty()
-            .hasSize(6)
-            .matches("[A-Z0-9]{6}");
+        assertThat("Emergency share code should be valid", emergencyShareCode, is(not(emptyString())));
+        assertThat("Emergency share code should be 6 characters", emergencyShareCode.length(), is(6));
+        assertThat("Emergency share code should match pattern", emergencyShareCode, matchesPattern("[A-Z0-9]{6}"));
     }
     
     // ============================================================================

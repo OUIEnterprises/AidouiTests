@@ -85,9 +85,7 @@ public class PasswordResetFlowTest {
         String message = response.path("message");
         System.out.println("Reset request response: " + message);
 
-        assertThat(message)
-                .as("Response message should confirm code was sent")
-                .isNotEmpty();
+        assertThat("Response message should confirm code was sent", message, is(not(emptyString())));
     }
 
     @Test
@@ -183,9 +181,7 @@ public class PasswordResetFlowTest {
                 .extract().response();
 
         String idToken = response.path("idToken");
-        assertThat(idToken)
-                .as("ID token should be present after login with new password")
-                .isNotEmpty();
+        assertThat("ID token should be present after login with new password", idToken, is(not(emptyString())));
 
         System.out.println("Successfully logged in with new password");
     }

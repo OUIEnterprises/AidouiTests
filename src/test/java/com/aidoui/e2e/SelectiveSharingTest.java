@@ -202,9 +202,8 @@ public class SelectiveSharingTest {
 
         // All returned records should be of type LAB
         if (recordTypes != null && !recordTypes.isEmpty()) {
-            assertThat(recordTypes)
-                    .as("All records should be of type LAB")
-                    .allMatch(type -> type.equals("LAB"));
+            boolean allLab = recordTypes.stream().allMatch(type -> type.equals("LAB"));
+            assertThat("All records should be of type LAB", allLab, is(true));
 
             System.out.println("✓ Filtering works: " + recordTypes.size() + " LAB record(s) returned");
         } else {
@@ -288,9 +287,7 @@ public class SelectiveSharingTest {
             System.out.println("  Types: " + recordTypes.toString());
 
             // With full access, we should be able to see any/all types
-            assertThat(recordTypes)
-                    .as("Should have access to records")
-                    .isNotEmpty();
+            assertThat("Should have access to records", recordTypes, is(not(empty())));
         } else {
             System.out.println("ℹ No records found for this patient");
         }
@@ -316,9 +313,7 @@ public class SelectiveSharingTest {
 
             List<String> recordTypes = response.path("items.type");
             if (recordTypes != null && !recordTypes.isEmpty()) {
-                assertThat(recordTypes)
-                        .as("LAB-only token should not return PRESCRIPTION records")
-                        .doesNotContain("PRESCRIPTION", "VISIT_NOTES");
+                assertThat("LAB-only token should not return PRESCRIPTION records", recordTypes, not(hasItems("PRESCRIPTION", "VISIT_NOTES")));
             }
         }
 
