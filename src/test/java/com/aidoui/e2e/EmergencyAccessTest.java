@@ -11,8 +11,8 @@ import org.junit.jupiter.api.*;
 import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * E2E Tests for Emergency Portal Access Control
@@ -85,7 +85,7 @@ public class EmergencyAccessTest {
             .extract().response();
         
         patientIdToken = response.path("idToken");
-        assertThat(patientIdToken).isNotEmpty();
+        assertThat(patientIdToken, is(not(emptyString())));
     }
     
     @Test
@@ -111,7 +111,7 @@ public class EmergencyAccessTest {
             .extract().response();
         
         doctorIdToken = response.path("idToken");
-        assertThat(doctorIdToken).isNotEmpty();
+        assertThat(doctorIdToken, is(not(emptyString())));
     }
     
     @Test
@@ -136,7 +136,7 @@ public class EmergencyAccessTest {
             .extract().response();
         
         hospitalIdToken = response.path("idToken");
-        assertThat(hospitalIdToken).isNotEmpty();
+        assertThat(hospitalIdToken, is(not(emptyString())));
     }
     
     // ============================================================================
@@ -207,7 +207,7 @@ public class EmergencyAccessTest {
             .extract().response();
         
         emergencyPassToken = response.path("passToken");
-        assertThat(emergencyPassToken).isNotEmpty();
+        assertThat(emergencyPassToken, is(not(emptyString())));
     }
     
     @Test
@@ -389,7 +389,7 @@ public class EmergencyAccessTest {
             .extract().response();
         
         String recordId = response.path("id");
-        assertThat(recordId).isNotEmpty();
+        assertThat(recordId, is(not(emptyString())));
     }
     
     @Test

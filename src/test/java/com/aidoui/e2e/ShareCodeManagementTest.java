@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.List;
 
 import static io.restassured.RestAssured.*;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * E2E Test: Share Code Management

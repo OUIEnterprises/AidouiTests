@@ -11,8 +11,8 @@ import org.junit.jupiter.api.*;
 import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.*;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * End-to-end tests for AIDOUI Records API endpoints.
@@ -71,7 +71,7 @@ public class RecordsEndpointsTest {
                 .extract().response();
 
         patientIdToken = response.path("idToken");
-        assertThat(patientIdToken).isNotEmpty();
+        assertThat(patientIdToken, is(not(emptyString())));
     }
 
     @Test
@@ -96,7 +96,7 @@ public class RecordsEndpointsTest {
                 .extract().response();
 
         doctorIdToken = response.path("idToken");
-        assertThat(doctorIdToken).isNotEmpty();
+        assertThat(doctorIdToken, is(not(emptyString())));
     }
 
     @Test
@@ -124,7 +124,7 @@ public class RecordsEndpointsTest {
                 .extract().response();
 
         shareCode = response.path("code");
-        assertThat(shareCode).hasSize(6);
+        assertThat(shareCode, hasLength(6));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class RecordsEndpointsTest {
                 .extract().response();
 
         passToken = response.path("passToken");
-        assertThat(passToken).isNotEmpty();
+        assertThat(passToken, is(not(emptyString())));
     }
 
     @Test

@@ -14,8 +14,8 @@ import java.io.File;
 import java.util.List;
 
 import static io.restassured.RestAssured.*;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * E2E Test: Selective Record Sharing
@@ -153,7 +153,7 @@ public class SelectiveSharingTest {
                 .extract().response();
 
         labOnlyShareCode = response.path("code");
-        assertThat(labOnlyShareCode).hasSize(6);
+        assertThat(labOnlyShareCode, hasLength(6));
 
         System.out.println("LAB-only share code: " + labOnlyShareCode);
         System.out.println("Allowed types: " + response.path("recordTypes").toString());
@@ -181,7 +181,7 @@ public class SelectiveSharingTest {
                 .extract().response();
 
         labOnlyPassToken = response.path("passToken");
-        assertThat(labOnlyPassToken).isNotEmpty();
+        assertThat(labOnlyPassToken, is(not(emptyString())));
     }
 
     @Test
@@ -237,7 +237,7 @@ public class SelectiveSharingTest {
                 .extract().response();
 
         allAccessShareCode = response.path("code");
-        assertThat(allAccessShareCode).hasSize(6);
+        assertThat(allAccessShareCode, hasLength(6));
 
         System.out.println("Full-access share code: " + allAccessShareCode);
     }
@@ -264,7 +264,7 @@ public class SelectiveSharingTest {
                 .extract().response();
 
         allAccessPassToken = response.path("passToken");
-        assertThat(allAccessPassToken).isNotEmpty();
+        assertThat(allAccessPassToken, is(not(emptyString())));
     }
 
     @Test
