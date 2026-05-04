@@ -29,11 +29,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * 4. Login with new password to verify reset worked
  * 5. Reset password back to original for test cleanup
  *
+ * DISABLED: Requires SES email configuration to receive verification codes.
+ * See AidouiCDK/docs/SES_EMAIL_SETUP.md for setup instructions.
+ * Re-enable this test after SES is configured in beta environment.
+ *
  * NOTE: This test uses mocked verification codes in test environments.
  * In production, codes are sent via email (AWS SES/SNS).
  */
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Disabled("Requires SES email configuration - see AidouiCDK/docs/SES_EMAIL_SETUP.md")
 @DisplayName("E2E: Password Reset Flow")
 @Timeout(value = 45, unit = TimeUnit.SECONDS)
 public class PasswordResetFlowTest {
